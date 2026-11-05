@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Early Distal Tubule: Solute Transport</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:#c9d4c8;font-family:Verdana,"DejaVu Sans",sans-serif;color:#1d2a1d}
+#wrap{max-width:1200px;margin:0 auto;padding:12px 12px 28px}
+#bar,#bar2{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px;align-items:center}
+#bar span,#bar2 span{font-size:13px;color:#4a5a48;margin-right:2px}
+.sb{--c:#555;border:2px solid var(--c);background:rgba(255,255,255,.35);color:#1d2a1d;border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer}
+.sb.on{background:var(--c);color:#fff}.sb.g{--c:#6b7a68}
+svg{display:block;width:100%;height:auto;user-select:none}
+#info{margin-top:10px;background:#bcc7b8;border-radius:10px;padding:12px 14px;font-size:15px;line-height:1.5;min-height:74px}
+#bar .sb.dot::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:7px}#bar .sb.dot.on::before{background:#fff}#bar:not(.pon) .sb.dot::before{display:none}
+</style></head><body>
+<div id="wrap"><div id="bar"><span>Solutes:</span></div>
+<svg id="fig" viewBox="0 0 1300 800" xmlns="http://www.w3.org/2000/svg" font-family="Verdana,'DejaVu Sans',sans-serif">
+<defs id="defs">
+<clipPath id="pc"><rect x="30" y="60" width="1240" height="730" rx="18"/></clipPath>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10Z" fill="#111"/></marker>
+</defs>
+<rect width="1300" height="800" fill="#c9d4c8"/>
+<text x="650" y="34" font-size="24" font-weight="bold" text-anchor="middle" fill="#111">EARLY DISTAL TUBULE</text>
+<g clip-path="url(#pc)"><rect x="30" y="60" width="260" height="730" fill="#d4d4d4"/></g>
+<path d="M1115,172 L1115,770 A70,24 0 0 0 1255,770 L1255,172 Z" fill="#ffcccc"/><ellipse cx="1185" cy="172" rx="70" ry="24" fill="#ffe3e3"/>
+<rect x="290" y="125" width="590" height="650" rx="40" fill="#cfdae8" stroke="#7d9bc4" stroke-width="7"/>
+<path d="M140 190 L180 190 L180 260 L205 260 L160 310 L115 260 L140 260Z" fill="#f6e4a8"/>
+<text x="585" y="100" font-size="20" text-anchor="middle" fill="#111">Cell of the early distal tubule</text>
+<text x="48" y="92" font-size="20" font-weight="bold" fill="#111">Lumen</text><text x="1252" y="92" font-size="20" font-weight="bold" text-anchor="end" fill="#111">Blood</text>
+<g fill="#fff" stroke="#8a8a8a" stroke-width="2"><rect x="48" y="104" width="86" height="32" rx="3"/><rect x="1168" y="104" width="84" height="32" rx="3"/></g>
+<g font-size="19" fill="#111" text-anchor="middle" dominant-baseline="central"><text x="91" y="121">−10 mV</text><text x="1210" y="121">0 mV</text></g>
+<text x="48" y="440" font-size="17" font-weight="bold" fill="#8a2a2a">Thiazide</text><text x="48" y="462" font-size="17" font-weight="bold" fill="#8a2a2a">diuretics</text>
+<g id="dyn"></g><g id="ptc"></g><text id="fl" x="160" y="121" font-size="15" fill="#33404c" dominant-baseline="central">Fluid flow ↓</text><g id="fx"></g></svg>
+<div id="bar2" style="margin:10px 0 0"><span>Drugs and disease:</span></div>
+<div id="info"></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const TK={Na:['Na⁺','#8d8a1b'],K:['K⁺','#d62d20'],Cl:['Cl⁻','#2e7d4f'],Ca:['Ca²⁺','#7a5a3a'],Mg:['Mg²⁺','#c2751f'],H2O:['H₂O','#2b6fd6']};
+const SH={Na:'Na⁺',K:'K⁺',Cl:'Cl⁻',Ca:'Ca²⁺',Mg:'Mg²⁺'};
+const INFO={Na:'<b>Na⁺</b> enters with Cl⁻ on the Na⁺–Cl⁻ cotransporter (NCC), which is electroneutral. The Na⁺–K⁺ ATPase pumps it out to the blood. On the blood side, Na⁺ also re-enters in exchange for Ca²⁺ (NCX), and the low cell Na⁺ keeps that exchange working.',
+K:'<b>K⁺</b> is taken into the cell from the blood by the Na⁺–K⁺ ATPase (3 Na⁺ out, 2 K⁺ in), which builds the Na⁺ gradient used by NCC and NCX.',
+Cl:'<b>Cl⁻</b> enters on NCC with Na⁺ and leaves the cell through a Cl⁻ channel on the blood side (ClC-Kb).',
+Ca:'<b>Ca²⁺</b> is reabsorbed through the cell. It enters through TRPV5 channels on the lumen side, travels across the cytoplasm bound to calbindin (dashed arrow), and is pushed out by the Na⁺/Ca²⁺ exchanger (NCX) on the blood side. PTH and vitamin D increase this.',
+Mg:'<b>Mg²⁺</b> enters through TRPM6 channels, helped by the negative lumen potential (−10 mV), and crosses to the blood by a basolateral carrier (the arrow is simplified). The distal tubule is the last place where urinary Mg²⁺ is controlled.',
+H2O:'<b>Water</b> cannot cross this segment, so NaCl removal further dilutes the tubular fluid. The early distal tubule is sometimes called the cortical diluting segment.',
+THZ:'<b>Thiazide diuretics</b> block NCC from the lumen side, so less Na⁺ and Cl⁻ are reabsorbed (a mild diuresis). Less Na⁺ and Cl⁻ in the cell steepens the gradient for NCX and hyperpolarizes the cell, so more Ca²⁺ is reabsorbed and urinary Ca²⁺ falls (useful for calcium kidney stones).',
+GIT:'<b>Gitelman syndrome</b> is an inherited loss of NCC function (SLC12A3 mutation), like lifelong thiazide use. It causes salt wasting, hypokalemia, metabolic alkalosis, hypomagnesemia (TRPM6 is downregulated, so Mg²⁺ is lost) and hypocalciuria. It is usually milder than Bartter syndrome.'};
+const DEF='Select solutes to follow their routes; others fade. Turn on Moving solutes to watch Na⁺ (olive), Cl⁻ (green), Ca²⁺ (brown) and Mg²⁺ (orange) drift down the lumen and cross the cell. Try thiazide diuretics and Gitelman syndrome.';
+const SP=[['s0','#f4d8db','#d58f98'],['s1','#e2f2f4','#5fb0bd'],['s2','#dcd6ef','#8f84bb'],['s3','#e4f3de','#8fc486'],['s4','#f7e3c6','#d9a468']];
+$('#defs').insertAdjacentHTML('beforeend',SP.map(([i,a,b])=>`<radialGradient id="${i}" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></radialGradient>`).join(''));
+const arrow=(x1,y,x2)=>`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#111" stroke-width="2.4" marker-end="url(#ah)"/>`;
+const txt=(t,x,y,s=20)=>`<text x="${x}" y="${y}" font-size="${s}" fill="#111" dominant-baseline="central">${t}</text>`;
+const el=(k,i)=>`<g class="el" data-k="${k}">${i}</g>`;
+const lab=(t,c='#1d2a1d',s=15)=>t?`<text y="1" font-size="${s}" font-weight="bold" fill="${c}" text-anchor="middle" dominant-baseline="central" pointer-events="none">${t}</text>`:'';
+const tp=(k,x,y,f,n,l,c,s)=>`<g class="el tp" data-k="${k}" data-x="${x}" data-y="${y}" transform="translate(${x},${y})"><title>${n}</title><circle r="34" fill="url(#${f})" stroke="#555" stroke-opacity=".5" stroke-width="2"/>${lab(l,c,s)}</g>`;
+const X=(x,y)=>`<line x1="${x-16}" y1="${y-16}" x2="${x+16}" y2="${y+16}" stroke="#c0281f" stroke-width="5"/><line x1="${x+16}" y1="${y-16}" x2="${x-16}" y2="${y+16}" stroke="#c0281f" stroke-width="5"/>`;
+const NT=(t,x,y)=>`<text x="${x}" y="${y}" font-size="15" font-weight="bold" fill="#c0281f" dominant-baseline="central">${t}</text>`;
+let h='';
+h+=el('Mg',arrow(225,190,355)+txt('Mg²⁺',366,190))+el('Ca',arrow(225,300,355)+txt('Ca²⁺',366,300));
+h+=el('Na',arrow(225,404,355)+txt('Na⁺',366,404))+el('Cl',arrow(225,456,355)+txt('Cl⁻',366,456));
+h+=el('Na',arrow(815,189,945)+txt('Na⁺',957,189))+el('K',arrow(945,241,815)+txt('K⁺',957,241));
+h+=el('Cl',arrow(815,420,945)+txt('Cl⁻',957,420))+el('Mg',arrow(815,520,945)+txt('Mg²⁺',957,520));
+h+=el('Ca',arrow(815,614,945)+txt('Ca²⁺',957,614))+el('Na',arrow(945,666,815)+txt('Na⁺',957,666));
+h+=el('Ca','<path d="M400 300 C560 300 620 360 600 450 S560 600 780 636" fill="none" stroke="#111" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#ah)"/><text x="620" y="400" font-size="15" fill="#111">calbindin</text>');
+h+=el('H2O','<text x="48" y="700" font-size="26" font-weight="bold" fill="#2b6fd6" dominant-baseline="central">H₂O</text>'+arrow(130,700,248)+X(268,700)+txt('Impermeable to water',48,740,15));
+h+=tp('Mg',290,190,'s2','TRPM6 Mg²⁺ channel','TRPM6','#1d2a1d',13)+tp('Ca',290,300,'s1','TRPV5 Ca²⁺ channel','TRPV5','#1d2a1d',13)+tp('Na Cl',290,430,'s0','Na⁺–Cl⁻ cotransporter (NCC)','NCC');
+h+=tp('Na K',880,215,'s3','Na⁺–K⁺ ATPase','ATP','#2a4a9a')+tp('Cl',880,420,'s2','Cl⁻ channel (ClC-Kb)','ClC-Kb','#1d2a1d',13)+tp('Ca Na',880,640,'s4','Na⁺/Ca²⁺ exchanger (NCX)','NCX');
+const FL=[['Mg',150,190,430],['Ca',150,300,430],['Na',150,404,430],['Cl',150,456,430],['Na',780,189,1060],['K',1060,241,780],['Cl',780,420,1060],['Mg',780,520,1060],['Ca',780,614,1060],['Na',1060,666,780]];
+FL.forEach((f,i)=>{[0,.5].forEach(p=>{const l=SH[f[0]],w=Math.max(42,l.length*10+18);h+=`<g class="tk" data-f="${i}" data-p="${p}" style="display:none"><rect x="${-w/2}" y="-13" width="${w}" height="26" rx="13" fill="${TK[f[0]][1]}"/><text font-size="15" font-weight="bold" fill="#fff" text-anchor="middle" dominant-baseline="central">${l}</text></g>`})});
+$('#dyn').innerHTML=h;
+$('#fx').innerHTML=`<g class="fx" data-k="THZ" style="display:none">${X(290,430)}${NT('Thiazide blocks NCC',40,350)}${NT('Ca²⁺ reabsorption rises',40,370)}</g><g class="fx" data-k="GIT" style="display:none">${X(290,430)}${X(290,190)}${NT('Gitelman: NCC defective',40,350)}${NT('Mg²⁺ lost, Ca²⁺ retained',40,370)}</g>`;
+const act=new Set();let last=null;const bar=$('#bar');
+const FX={THZ:['Thiazide diuretics','#a0302a'],GIT:['Gitelman syndrome','#7a3b8c']};
+const mk=(par,k,name,col)=>{const b=document.createElement('button');b.className='sb';b.dataset.k=k;b.style.setProperty('--c',col);b.textContent=name;b.onclick=()=>{if(act.has(k))act.delete(k);else{act.add(k);last=k}if(!act.has(last))last=[...act].pop()||null;upd()};par.appendChild(b)};
+Object.keys(TK).forEach(k=>mk(bar,k,TK[k][0],TK[k][1]));
+['Na','Cl','Ca','Mg'].forEach(k=>bar.querySelector(`[data-k="${k}"]`).classList.add('dot'));
+Object.keys(FX).forEach(k=>mk($('#bar2'),k,FX[k][0],FX[k][1]));
+[['All',()=>{Object.keys(TK).forEach(k=>act.add(k));last='Na'}],['Clear',()=>{act.clear();last=null}]].forEach(([n,f])=>{const b=document.createElement('button');b.className='sb g';b.textContent=n;b.onclick=()=>{f();upd()};bar.appendChild(b)});
+function upd(){const any=[...act].some(k=>TK[k]);document.querySelectorAll('.fx').forEach(e=>{e.style.display=act.has(e.dataset.k)?'':'none'});
+document.querySelectorAll('.el').forEach(e=>{const m=e.dataset.k.split(' ').some(k=>act.has(k));e.setAttribute('opacity',any&&!m?.28:1)});
+document.querySelectorAll('.sb[data-k]').forEach(b=>b.classList.toggle('on',act.has(b.dataset.k)));
+$('#info').innerHTML=last?INFO[last]+(act.size>1?`<br><span style="font-size:13px;opacity:.75">Showing ${act.size} items; the text describes the one you picked last.</span>`:''):DEF}
+const PC={Na:'#8d8a1b',Cl:'#2e7d4f',Ca:'#7a5a3a',Mg:'#c2751f'},PN={Na:'Na⁺',Cl:'Cl⁻',Ca:'Ca²⁺',Mg:'Mg²⁺'},PG=$('#ptc'),PT=[];
+const LY={mg:190,ca:300,na:404,cl:456};
+const RTE={mg:[[290,190],[600,190],[800,520],[1150,520]],ca:[[290,300],[480,300],[600,450],[700,610],[800,636],[1150,636]],na:[[290,404],[800,404],[800,189],[945,189],[1150,189]],cl:[[290,456],[800,420],[1150,420]]};
+function prob(p){const g=act.has('GIT'),t=act.has('THZ');
+if(p.rt==='na'||p.rt==='cl')return g||t?.05:.85;
+if(p.rt==='ca')return g||t?.9:.6;
+return g?.25:t?.45:.6}
+function mkP(pre){const u=Math.random(),kind=u<.3?'Na':u<.6?'Cl':u<.8?'Ca':'Mg',rt=kind.toLowerCase(),ly=LY[rt];
+const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.innerHTML=`<title>${PN[kind]}</title><circle r="10" fill="${PC[kind]}" stroke="#fff" stroke-width="2"/>`;PG.appendChild(g);
+PT.push({kind,rt,ly,x:50+Math.random()*210,y:pre?140+Math.random()*Math.max(10,ly-220):140,vy:36+Math.random()*14,ph:Math.random()*6.3,st:'drift',a:pre?1:0,fade:1,g})}
+let showP=false;
+function stepP(t,dt){PG.style.display=showP?'':'none';$('#fl').style.display=showP?'':'none';if(!showP)return;
+if(PT.length<60&&t-(stepP.s||0)>.45){stepP.s=t;mkP(0)}
+const any=Object.keys(TK).some(k=>act.has(k));
+for(let i=PT.length-1;i>=0;i--){const p=PT[i];p.a=Math.min(1,p.a+dt*2);
+if(p.st==='drift'){p.y+=p.vy*dt;p.x=Math.min(262,Math.max(48,p.x+Math.sin(t*1.7+p.ph)*12*dt));if(!p.passed&&p.y>=p.ly-70)p.st='appr';p.fade=Math.max(0,Math.min(1,(772-p.y)/40))}
+else if(p.st==='appr'){const dx=252-p.x,dy=p.ly-p.y,d=Math.hypot(dx,dy);if(d<4){if(Math.random()<prob(p)){p.wp=RTE[p.rt].map(a=>a.slice());p.st='path'}else{p.passed=true;p.st='drift'}}else{const s=Math.min(d,95*dt);p.x+=dx/d*s;p.y+=dy/d*s}}
+else if(p.st==='path'){const w=p.wp[0],dx=w[0]-p.x,dy=w[1]-p.y,d=Math.hypot(dx,dy),s=150*dt;if(d<=s){p.x=w[0];p.y=w[1];p.wp.shift();if(!p.wp.length)p.st='cap'}else{p.x+=dx/d*s;p.y+=dy/d*s}}
+else{p.y+=40*dt;p.fade-=dt*.9}
+if((p.st==='drift'&&p.y>775)||p.fade<=0){p.g.remove();PT.splice(i,1);continue}
+const on=act.has(p.kind);p.g.setAttribute('opacity',(p.a*p.fade*(any&&!on?.28:1)).toFixed(2));
+p.g.setAttribute('transform',`translate(${p.x.toFixed(1)},${p.y.toFixed(1)}) scale(${on?1.3:1})`)}}
+{const b=document.createElement('button');b.className='sb g';b.textContent='Moving solutes';b.onclick=()=>{showP=!showP;b.classList.toggle('on',showP);bar.classList.toggle('pon',showP)};bar.appendChild(b)}
+for(let i=0;i<24;i++)mkP(1);
+const tps=[...document.querySelectorAll('.tp')],tks=[...document.querySelectorAll('.tk')];
+let pt=0;function loop(ts){const t=ts/1000,dt=Math.min(.05,t-(pt||t));pt=t;stepP(t,dt);
+tks.forEach(k=>{const f=FL[k.dataset.f],on=act.has(f[0]);k.style.display=on?'':'none';if(on){const u=(t/2.6+ +k.dataset.p)%1;k.setAttribute('transform',`translate(${f[1]+(f[3]-f[1])*u},${f[2]})`);k.setAttribute('opacity',Math.sin(Math.PI*u).toFixed(2))}});
+tps.forEach(p=>{const on=p.dataset.k.split(' ').some(k=>act.has(k)),s=on?1+.09*Math.sin(t*4):1;p.setAttribute('transform',`translate(${p.dataset.x},${p.dataset.y}) scale(${s.toFixed(3)})`)});
+requestAnimationFrame(loop)}
+upd();requestAnimationFrame(loop);
+</script></body></html>
